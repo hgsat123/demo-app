@@ -4,6 +4,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 		bzip2 \
 		unzip \
 		xz-utils \
+                wget curl sudo \
 	&& rm -rf /var/lib/apt/lists/*
 
 RUN echo 'deb http://ftp.debian.org/debian jessie-backports main' > /etc/apt/sources.list.d/jessie-backports.list
@@ -41,12 +42,26 @@ RUN set -x \
 # see CA_CERTIFICATES_JAVA_VERSION notes above
 RUN /var/lib/dpkg/info/ca-certificates-java.postinst configure
 
+RUN wget -q -O - http://pkg.jenkins-ci.org/debian/jenkins-ci.org.key \
+  | sudo apt-key add -
+
+RUN sudo echo "deb http://pkg.jenkins-ci.org/debian binary/" > \
+  /etc/apt/sources.list.d/jenkins.list
+
+ENV JENKINS_HOME /var/lib/jenkins
+RUN sudo apt-get update
+RUN sudo apt-get install -y jenkins
+RUN sudo usermod -u 113 jenkins
+RUN sudo groupmod -g 117 jenkins
+RUN chown -R jenkins:jenkins /var/lib/jenkins
+RUN chown -R jenkins:jenkins /var/log/jenkins
+RUN chown -R jenkins:jenkins /var/cache/jenkins
+EXPOSE 8080
+EXPOSE 50000
+
 RUN echo 'deb http://dl.bintray.com/sbt/debian /' > /etc/apt/sources.list.d/sbt.list
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
 
 RUN apt-get update \
 	&& apt-get install -y sbt \
 	&& rm -rf /var/lib/apt/lists/* 
-
-RUN mkdir -p /home/sbt/.sbt
-COPY repositories /home/sbt/.sbt

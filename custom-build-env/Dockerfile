@@ -23,7 +23,7 @@ RUN { \
 
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
 
-ENV JAVA_VERSION 8u121
+ENV JAVA_VERSION 8u131
 ENV JAVA_DEBIAN_VERSION 8u131-b11-1~bpo8+1
 
 # see https://bugs.debian.org/775775
@@ -48,3 +48,5 @@ RUN apt-get update \
 	&& apt-get install -y sbt \
 	&& rm -rf /var/lib/apt/lists/* 
 
+RUN mkdir -p /home/sbt/.sbt
+COPY repositories /home/sbt/.sbt

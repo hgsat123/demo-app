@@ -2,7 +2,7 @@ val commonPlugins = Seq(JavaAppPackaging, DockerPlugin)
 
 val projectSettings = Seq(
   organization in ThisBuild := "com.winton",
-  scalaVersion in ThisBuild := "2.11.8"
+  scalaVersion in ThisBuild := "2.11.11"
 )
 
 val scalacSettings = Seq(

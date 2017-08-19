@@ -43,14 +43,18 @@ node {
     }
   }
 
-  stage ('Build and Push Docker Image') {
-    withCredentials([[$class: "UsernamePasswordMultiBinding", usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS', credentialsId: 'Docker Hub']]) {
-      sh 'docker login --username $DOCKERHUB_USER --password $DOCKERHUB_PASS'
-    }
-    docker.withRegistry('172.31.17.242:5000/sys') 
-    def serverImage = docker.build("sambott/grpc-test:${GIT_VERSION}", 'server/target/docker/stage')
-    serverImage.push()
-    sh 'docker logout'
+  #stage ('Build and Push Docker Image') {
+  #  withCredentials([[$class: "UsernamePasswordMultiBinding", usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS', credentialsId: 'Docker Hub']]) {
+  #    sh 'docker login --username $DOCKERHUB_USER --password $DOCKERHUB_PASS'
+  #  }
+  #  docker.withRegistry('172.31.17.242:5000/sys') 
+  #  def serverImage = docker.build("sambott/grpc-test:${GIT_VERSION}", 'server/target/docker/stage')
+  #  serverImage.push()
+  #  sh 'docker logout'
+  #}
+  stage ('Push Docker Image') {
+    docker.withRegistry('172.31.17.242:5000/sys')
+    app.push("${build_env:${GIT_VERSION}")
   }
 
   stage ('Deploy to DEV') {

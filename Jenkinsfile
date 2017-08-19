@@ -47,7 +47,7 @@ node {
     withCredentials([[$class: "UsernamePasswordMultiBinding", usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS', credentialsId: 'Docker Hub']]) {
       sh 'docker login --username $DOCKERHUB_USER --password $DOCKERHUB_PASS'
     }
-    docker.withRegistry('172.31.17.242:5000/sys') {
+    docker.withRegistry('172.31.17.242:5000/sys') 
     def serverImage = docker.build("sambott/grpc-test:${GIT_VERSION}", 'server/target/docker/stage')
     serverImage.push()
     sh 'docker logout'

@@ -43,7 +43,7 @@ node {
     }
   }
 
-  state('Build and Push Image') {
+  stage ('Build and Push Docker Image') {
 
      def serverImage = docker.build("hgsat123/ganesha123:${GIT_VERSION}", 'server/target/docker/stage')
      docker.withRegistry('172.31.17.242:5000/sys', '')

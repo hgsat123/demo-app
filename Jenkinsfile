@@ -45,12 +45,12 @@ node {
 
   stage ('Build and Push Docker Image') {
 
-     def serverImage = docker.build("hgsat123/ganesha123:${GIT_VERSION}", 'server/target/docker/stage')
-     docker.withRegistry('172.31.17.242:5000/sys', '')
+     def serverImage = docker.build("myapp:${GIT_VERSION}", 'server/target/docker/stage')
+     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials')
      serverImage.push()
   }
   stage ('Deploy to DEV') {
-    devAddress = deployContainer("hgsat123/ganesha123:${GIT_VERSION}", 'DEV')
+    devAddress = deployContainer("myapp:${GIT_VERSION}", 'DEV')
   }
 
   stage ('Verify Deployment') {
@@ -65,7 +65,7 @@ stage 'Deploy to LIVE'
     input message:'Approve deployment to LIVE?'
   }
   node {
-    deployContainer("hgsat123/ganesha123:${GIT_VERSION}", 'LIVE')
+    deployContainer("myapp:${GIT_VERSION}", 'LIVE')
   }
 
 def deployContainer(image, env) {

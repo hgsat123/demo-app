@@ -45,9 +45,12 @@ node {
 
   stage ('Build and Push Docker Image') {
 
+     withCredentials([[$class: "UsernamePasswordMultiBinding", usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS', credentialsId: 'docker-hub-credentials']]) {
+      sh 'docker login --username $DOCKERHUB_USER --password $DOCKERHUB_PASS'
+    }
      def serverImage = docker.build("myapp:${GIT_VERSION}", 'server/target/docker/stage')
-     docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials')
      serverImage.push()
+     sh 'docker logout' 
   }
   stage ('Deploy to DEV') {
     devAddress = deployContainer("myapp:${GIT_VERSION}", 'DEV')

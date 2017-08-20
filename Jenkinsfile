@@ -43,15 +43,6 @@ node {
     }
   }
 
-#  stage ('Build and Push Docker Image') {
-#    withCredentials([[$class: "UsernamePasswordMultiBinding", usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS', credentialsId: 'Docker Hub']]) {
-#      sh 'docker login --username $DOCKERHUB_USER --password $DOCKERHUB_PASS'
-#    }
-#    def serverImage = docker.build("hgsat123/ganesha123:${GIT_VERSION}", 'server/target/docker/stage')
-#    serverImage.push()
-#    sh 'docker logout'
-#  }
-
   state('Build and Push Image') {
 
      def serverImage = docker.build("hgsat123/ganesha123:${GIT_VERSION}", 'server/target/docker/stage')

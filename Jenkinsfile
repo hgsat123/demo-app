@@ -60,7 +60,7 @@ node {
   }
 
   stage ('Publish Docker Image') {
-     serverImage.push("build_env:${GIT_VERSION}")
+     serverImage.push()
      sh 'docker logout'
   }
 

@@ -49,7 +49,7 @@ node {
       sh 'docker login --username $DOCKERHUB_USER --password $DOCKERHUB_PASS'
     }
 
-     def serverImage = docker.build("hgsat123/sys:myapp:${GIT_VERSION}", 'server/target/docker/stage')
+     def serverImage = docker.build("hgsat123/myapp:${GIT_VERSION}", 'server/target/docker/stage')
 
     stage ('Test Docker Image') {
       serverImage.inside {
@@ -60,7 +60,7 @@ node {
   }
 
   stage ('Publish Docker Image') {
-     serverImage.push("latest")
+     serverImage.push("build_env:${GIT_VERSION}")
      sh 'docker logout'
   }
 

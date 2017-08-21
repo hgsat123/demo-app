@@ -45,14 +45,14 @@ node {
 
   stage ('Build and Push Docker Image') {
 
-     def serverImage = docker.build("myapp:${GIT_VERSION}", 'server/target/docker/stage')
+     def serverImage = docker.build("sys/myapp:${GIT_VERSION}", 'server/target/docker/stage')
 
     stage ('Test Docker Image') {
       serverImage.inside {
         sh 'echo "Tests Passed"'
      }
    }
-   docker.withRegistry('https://registry.hub.docker.com/hgsat123/sys', 'docker-hub-credentials') {
+   docker.withRegistry('172.31.17.242:5000', '') {
     serverImage.push()
     }
   }

@@ -43,21 +43,27 @@ node {
     }
   }
 
-  stage ('Build and Push Docker Image') {
+  stage ('Build Docker Image') {
 
   withCredentials([[$class: "UsernamePasswordMultiBinding", usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS', credentialsId: 'docker-hub-credentials']]) {
       sh 'docker login --username $DOCKERHUB_USER --password $DOCKERHUB_PASS'
     }
 
-     def serverImage = docker.build("sys/myapp:${GIT_VERSION}", 'server/target/docker/stage')
+     def serverImage = docker.build("hgsat123/sys:myapp:${GIT_VERSION}", 'server/target/docker/stage')
 
     stage ('Test Docker Image') {
       serverImage.inside {
         sh 'echo "Tests Passed"'
      }
    }
-   serverImage.push()
+
   }
+
+  stage ('Publish Docker Image') {
+     serverImage.push("latest")
+     sh 'docker logout'
+  }
+
   stage ('Deploy to DEV') {
     devAddress = deployContainer("myapp:${GIT_VERSION}", 'DEV')
   }

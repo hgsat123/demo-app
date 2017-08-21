@@ -52,7 +52,7 @@ node {
         sh 'echo "Tests Passed"'
      }
    }
-   docker.withRegistry('172.31.17.242:5000', '') {
+   docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
     serverImage.push()
     }
   }

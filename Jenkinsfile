@@ -52,7 +52,7 @@ node {
         sh 'echo "Tests Passed"'
      }
    }
-   docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
+   docker.withRegistry('https://registry.hub.docker.com/hgsat123/sys', 'docker-hub-credentials') {
     serverImage.push()
     }
   }

@@ -53,8 +53,7 @@ node {
      }
    }
    docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
-    serverImage.push("myapp:${GIT_VERSION}")
-    serverImage.push("latest")
+    serverImage.push()
     }
   }
   stage ('Deploy to DEV') {

@@ -56,7 +56,7 @@ node {
   }
 
   stage ('Deploy to DEV') {
-    devAddress = deployContainer("myapp:${GIT_VERSION}", 'DEV')
+    devAddress = deployContainer("hgsat123/myapp:${GIT_VERSION}", 'dev')
   }
 
   stage ('Verify Deployment') {
@@ -71,12 +71,12 @@ stage 'Deploy to LIVE'
     input message:'Approve deployment to LIVE?'
   }
   node {
-    deployContainer("myapp:${GIT_VERSION}", 'LIVE')
+    deployContainer("hgsat123/myapp:${GIT_VERSION}", 'live')
   }
 
 def deployContainer(image, env) {
   docker.image('lachlanevenson/k8s-kubectl:v1.5.2').inside {
-    withCredentials([[$class: "FileBinding", credentialsId: 'KubeConfig', variable: 'KUBE_CONFIG']]) {
+    withCredentials([[$class: "FileBinding", credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG']]) {
       def kubectl = "kubectl  --kubeconfig=\$KUBE_CONFIG --context=${env}"
       sh "${kubectl} set image deployment/grpc-demo grpc-demo=${image}"
       sh "${kubectl} rollout status deployment/grpc-demo"

@@ -78,10 +78,10 @@ def deployContainer(image, env) {
   docker.image('lachlanevenson/k8s-kubectl:v1.5.2').inside {
     withCredentials([[$class: "FileBinding", credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG']]) {
       def kubectl = "kubectl  --kubeconfig=\$KUBE_CONFIG --context=${env}"
-      sh "${kubectl} set image deployment/grpc-demo grpc-demo=${image}"
-      sh "${kubectl} rollout status deployment/grpc-demo"
+      sh "${kubectl} set image deployment/my-demo my-demo=${image}"
+      sh "${kubectl} rollout status deployment/my-demo"
       return sh (
-        script: "${kubectl} get service/grpc-demo -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'",
+        script: "${kubectl} get service/my-demo -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'",
         returnStdout: true
       ).trim()
     }

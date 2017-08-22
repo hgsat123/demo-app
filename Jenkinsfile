@@ -75,7 +75,6 @@ stage 'Deploy to LIVE'
   }
 
 def deployContainer(image, env) {
-  docker.image('hgsat123/k8s-kubectl:1.7.0').inside {
     withCredentials([[$class: "FileBinding", credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG']]) {
       def kubectl = "kubectl  --kubeconfig=\$KUBE_CONFIG --context=${env}"
       sh "${kubectl} set image deployment/my-demo my-demo=${image}"
@@ -85,7 +84,6 @@ def deployContainer(image, env) {
         returnStdout: true
       ).trim()
     }
-  }
 }
 
 

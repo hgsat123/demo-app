@@ -56,8 +56,12 @@ RUN sudo groupmod -g 117 jenkins
 RUN chown -R jenkins:jenkins /var/lib/jenkins
 RUN chown -R jenkins:jenkins /var/log/jenkins
 RUN chown -R jenkins:jenkins /var/cache/jenkins
+COPY jenkins /etc/default/jenkins
+
+EXPOSE 8090
 EXPOSE 8080
 EXPOSE 50000
+RUN sudo service jenkins restart
 
 RUN echo 'deb http://dl.bintray.com/sbt/debian /' > /etc/apt/sources.list.d/sbt.list
 RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823

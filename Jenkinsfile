@@ -86,10 +86,10 @@ def deployContainer(image, env) {
       sh "${kubectl} rollout status deployment/my-demo"
       return sh (
         script: "${kubectl} get service/my-demo --namespace=${env} -o jsonpath='{.spec.clusterIP}'"
-      sh 'docker logout'
         returnStdout: true
       ).trim()
     }
+      sh 'docker logout'
 }
 
 

@@ -81,7 +81,7 @@ def deployContainer(image, env) {
       sh "${kubectl} set image deployment/my-demo my-demo=${image}"
       sh "${kubectl} rollout status deployment/my-demo"
       return sh (
-        script: "${kubectl} get service/my-demo -o jsonpath='{.spec.clusterIP}'",
+        script: "kubectl get service/my-demo --namespace=${env} -o jsonpath='{.spec.clusterIP}'",
         returnStdout: true
       ).trim()
     }

@@ -60,9 +60,7 @@ node {
   }
 
   stage ('Verify Deployment') {
-    buildEnv.inside {
-      sh "sample-client/target/universal/stage/bin/demo-client ${devAddress}"
-    }
+      sh "kubectl get po -o wide --namespaces=dev | grep Running"
   }
 }
 
@@ -73,15 +71,13 @@ stage 'Deploy to LIVE'
   node {
     deployContainer("hgsat123/myapp:${GIT_VERSION}", 'live')
   }
+  stage ('Verify LIVE') {
+      sh "kubectl get po -o wide --namespaces=live | grep Running"
+  }
 
 def deployContainer(image, env) {
     withCredentials([[$class: "FileBinding", credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG']]) {
       def kubectl = "kubectl  --kubeconfig=\$KUBE_CONFIG --context=${env}"
-
-  withCredentials([[$class: "UsernamePasswordMultiBinding", usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS', credentialsId: 'docker-hub-credentials']]) {
-      sh 'docker login --username $DOCKERHUB_USER --password $DOCKERHUB_PASS'
-    }
-
       sh "${kubectl} set image deployment/my-demo my-demo=${image}"
       sh "${kubectl} rollout status deployment/my-demo"
       return sh (
@@ -89,7 +85,6 @@ def deployContainer(image, env) {
         returnStdout: true
       ).trim()
     }
-    sh 'docker logout'
 }
 
 

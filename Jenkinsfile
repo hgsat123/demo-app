@@ -70,9 +70,9 @@ stage 'Deploy to LIVE'
   }
   node {
     deployContainer("hgsat123/myapp:${GIT_VERSION}", 'live')
-  }
-  stage ('Verify LIVE') {
+    stage ('Verify LIVE') {
       sh "kubectl get po -o wide --namespace=live | grep Running"
+   }
   }
 
 def deployContainer(image, env) {

@@ -77,10 +77,16 @@ stage 'Deploy to LIVE'
 def deployContainer(image, env) {
     withCredentials([[$class: "FileBinding", credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG']]) {
       def kubectl = "kubectl  --kubeconfig=\$KUBE_CONFIG --context=${env}"
+
+  withCredentials([[$class: "UsernamePasswordMultiBinding", usernameVariable: 'DOCKERHUB_USER', passwordVariable: 'DOCKERHUB_PASS', credentialsId: 'docker-hub-credentials']]) {
+      sh 'docker login --username $DOCKERHUB_USER --password $DOCKERHUB_PASS'
+    }
+
       sh "${kubectl} set image deployment/my-demo my-demo=${image}"
       sh "${kubectl} rollout status deployment/my-demo"
       return sh (
-        script: "${kubectl} get service/my-demo -o jsonpath='{.status.loadBalancer.ingress[0].hostname}'",
+        script: "${kubectl} get service/my-demo --namespace=${env} -o jsonpath='{.spec.clusterIP}{"\n"}'"
+      sh 'docker logout'
         returnStdout: true
       ).trim()
     }

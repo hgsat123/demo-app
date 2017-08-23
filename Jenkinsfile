@@ -59,8 +59,8 @@ node {
     devAddress = deployContainer("hgsat123/myapp:${GIT_VERSION}", 'dev')
   }
 
-  stage ('Verify Deployment') {
-      sh "kubectl get po -o wide --namespaces=dev | grep Running"
+  stage ('Verify DEV') {
+      sh "kubectl get po -o wide --namespace=dev | grep Running"
   }
 }
 
@@ -72,7 +72,7 @@ stage 'Deploy to LIVE'
     deployContainer("hgsat123/myapp:${GIT_VERSION}", 'live')
   }
   stage ('Verify LIVE') {
-      sh "kubectl get po -o wide --namespaces=live | grep Running"
+      sh "kubectl get po -o wide --namespace=live | grep Running"
   }
 
 def deployContainer(image, env) {

@@ -76,15 +76,12 @@ stage 'Deploy to LIVE'
   }
 
 def deployContainer(image, env) {
-    withCredentials([[$class: "FileBinding", credentialsId: 'kubeconfig', variable: 'KUBE_CONFIG']]) {
-      def kubectl = "kubectl  --kubeconfig=\$KUBE_CONFIG --context=${env}"
-      sh "${kubectl} set image deployment/my-demo my-demo=${image}"
-      sh "${kubectl} rollout status deployment/my-demo"
+      sh "kubectl --namespace=${env} set image deployment/my-demo my-demo=${image}"
+      sh "kubectl --namespace=${env} rollout status deployment/my-demo"
       return sh (
         script: "kubectl get service/my-demo --namespace=${env} -o jsonpath='{.spec.clusterIP}'",
         returnStdout: true
       ).trim()
-    }
 }
 
 

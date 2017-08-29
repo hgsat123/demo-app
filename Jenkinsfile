@@ -80,7 +80,7 @@ def deployContainer(image, env) {
       sh "kubectl --kubeconfig=\$KUBE_CONFIG create namespace ${env}"
       sh "kubectl config set-context ${env} --cluster=heg --namespace=${env} --kubeconfig=\$KUBE_CONFIG"
       sh "kubectl --kubeconfig=\$KUBE_CONFIG --context=${env} run my-demo --image=${image} --port=11235"
-      sh "kubectl --kubeconfig=\$KUBE_CONFIG --context=${env} expose deployment/my-demo -type=LoadBalancer --port=11235"
+      sh "kubectl --kubeconfig=\$KUBE_CONFIG --context=${env} expose deployment/my-demo --type=LoadBalancer --port=11235"
       sh "kubectl set image deployment/my-demo my-demo=${image} --namespace=${env}"
       sh "kubectl rollout status deployment/my-demo --namespace=${env}"
       return sh (

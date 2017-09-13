@@ -11,7 +11,7 @@ node {
     deleteDir()
     checkout scm
     GIT_VERSION = sh (
-      script: 'git describe --tags',
+      script: 'git describe --tags --always',
       returnStdout: true
     ).trim()
   }
